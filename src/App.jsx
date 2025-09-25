@@ -85,7 +85,7 @@ function App() {
                 <p className="text-dark-400 mb-6">
                   Connect your wallet to view and manage your DLMM liquidity positions, track performance, and analyze your portfolio.
                 </p>
-                <WalletConnect />
+                {/* <WalletConnect /> */}
               </div>
             </div>
           ) : (
