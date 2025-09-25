@@ -32,7 +32,7 @@ function ErrorFallback({ error, resetErrorBoundary }) {
 
 function App() {
   const { publicKey } = useWallet()
-  const [useMockData, setUseMockData] = useState(true) // Start with mock data
+  const [useMockData, setUseMockData] = useState(true) 
   const { positions, loading, error, summary, refetch, lastFetchTime } = usePositions()
 
   const handleToggleMockData = (useMock) => {
@@ -86,7 +86,9 @@ function App() {
                   Connect your wallet to view and manage your DLMM liquidity positions, track performance, and analyze your portfolio.
                 </p>
                 {/* <WalletConnect /> */}
+               
               </div>
+              
             </div>
           ) : (
             <div className="space-y-8">

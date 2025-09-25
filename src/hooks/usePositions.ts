@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
-import { fetchPoolPositions, fetchBinPositions, getTokenPrice, fetchAllPositions } from '../services/dlmmApi'
-import { Position, PoolPosition } from '../types/dlmm'
+import { getTokenPrice, fetchAllPositions } from '../services/dlmmApi'
+import { Position, Token } from '../types/dlmm'
 import { toast } from 'react-hot-toast'
 
 export type summaryType = {
@@ -11,6 +11,8 @@ export type summaryType = {
   totalFees: number;
   avgPnlPercentage: number;
 };
+
+
 
 export type EnrichedPosition = Position & { 
   totalValue: number; 
@@ -50,7 +52,7 @@ export const usePositions = () => {
 
       // Merge pool and bin data according to Saros DLMM structure
       // Pool positions contain aggregated data, bin positions contain granular details
-      const merged = poolPositions.flatMap(pool => {
+      const merged: Position[] = poolPositions.flatMap(pool => {
         // Find all bin positions that belong to this pool
         const poolBins = binPositions.filter(bin => 
           String(bin.pool) === String(pool.poolId) || 
@@ -70,6 +72,7 @@ export const usePositions = () => {
             tokens: pool.totalTokens,
             fees: 0,
             poolName: `Pool ${pool.poolId.slice(0, 8)}...`,
+            poolId: pool.poolId,
             totalTokens: pool.totalTokens
           }]
         }
@@ -92,20 +95,20 @@ export const usePositions = () => {
 
       // Enrich with prices and calculate P&L based on Saros DLMM data structure
       const enriched = await Promise.all(
-        merged.map(async (pos, index) => {
+        merged.map(async (pos: Position, index: number) => {
           try {
             // Fetch prices for all tokens in the position
             const prices = await Promise.all(
-              pos.tokens.map(t => getTokenPrice(t.mint))
+              pos.tokens.map((t: Token) => getTokenPrice(t.mint))
             )
             
             // Calculate token values
-            const tokenValues = pos.tokens.map((t, i) => t.amount * (prices[i] || 0))
-            const totalValue = tokenValues.reduce((a, b) => a + b, 0)
+            const tokenValues = pos.tokens.map((t: Token, i: number) => t.amount * (prices[i] || 0))
+            const totalValue = tokenValues.reduce((a: number, b: number) => a + b, 0)
             
             // Calculate P&L based on Saros DLMM structure
             // For DLMM, P&L is typically calculated as current value vs initial liquidity
-            const liquidityValue = pos.liquidityShares.reduce((a, b) => a + b, 0)
+            const liquidityValue = pos.liquidityShares.reduce((a: number, b: number) => a + b, 0)
             const pnl = totalValue - liquidityValue
             const pnlPercentage = liquidityValue > 0 ? (pnl / liquidityValue) * 100 : 0
 

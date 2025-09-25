@@ -1,4 +1,4 @@
-import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
+import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
 import { summaryType } from '../hooks/usePositions'
 import { TrendingUp, TrendingDown, DollarSign, Layers, Award, Clock, Database, Zap } from 'lucide-react'
 
@@ -7,7 +7,7 @@ interface Props {
   lastFetchTime?: Date | null
 }
 
-const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6']
+// const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6']
 
 export const PortfolioSummary = ({ summary, lastFetchTime }: Props) => {
   const chartData = summary.totalValue > 0 ? [
